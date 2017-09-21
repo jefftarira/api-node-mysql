@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
+import * as movieController from './movie.controller';
+
 const routes = new Router();
 
-routes.get('/', (req, res) => {
-  res.send('Ruta de movie');
-});
+routes.get('/', movieController.getAll);
 
 export default routes;

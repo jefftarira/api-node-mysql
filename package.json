@@ -28,7 +28,6 @@
     "compression": "^1.7.0",
     "cross-env": "^5.0.5",
     "express": "^4.15.4",
-    "express-myconnection": "^1.0.4",
     "helmet": "^3.8.1",
     "http-status": "^1.0.1",
     "mysql": "^2.14.1"
