@@ -189,7 +189,8 @@ module.exports = require("helmet");
 
 const routes = new __WEBPACK_IMPORTED_MODULE_0_express__["Router"]();
 
-routes.get('/', __WEBPACK_IMPORTED_MODULE_1__movie_controller__["a" /* getAll */]);
+routes.get('/', __WEBPACK_IMPORTED_MODULE_1__movie_controller__["b" /* getAll */]);
+routes.post('/', __WEBPACK_IMPORTED_MODULE_1__movie_controller__["a" /* createMovie */]);
 
 /* harmony default export */ __webpack_exports__["a"] = (routes);
 
@@ -198,82 +199,102 @@ routes.get('/', __WEBPACK_IMPORTED_MODULE_1__movie_controller__["a" /* getAll */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = getAll;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_http_status__ = __webpack_require__(13);
+/* harmony export (immutable) */ __webpack_exports__["b"] = getAll;
+/* harmony export (immutable) */ __webpack_exports__["a"] = createMovie;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_http_status__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_http_status___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_http_status__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__movie_model__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__movie_model__ = __webpack_require__(11);
 
 
 
 
 async function getAll(req, res) {
   try {
-    const movies = await __WEBPACK_IMPORTED_MODULE_1__movie_model__["a" /* default */].getAll();
+    const movies = await __WEBPACK_IMPORTED_MODULE_1__movie_model__["b" /* getAll */]();
     return res.status(__WEBPACK_IMPORTED_MODULE_0_http_status___default.a.OK).json(movies);
   } catch (e) {
-    return res.status(__WEBPACK_IMPORTED_MODULE_0_http_status___default.a.BAD_REQUEST).json(e);
+    return res.status(__WEBPACK_IMPORTED_MODULE_0_http_status___default.a.BAD_REQUEST).json({ error: e });
+  }
+}
+
+async function createMovie(req, res) {
+  try {
+    const movie = await __WEBPACK_IMPORTED_MODULE_1__movie_model__["a" /* createMovie */](req.body);
+    return res.status(__WEBPACK_IMPORTED_MODULE_0_http_status___default.a.CREATED).json(movie);
+  } catch (e) {
+    return res.status(__WEBPACK_IMPORTED_MODULE_0_http_status___default.a.BAD_REQUEST).json({ error: e });
   }
 }
 
 /***/ }),
 /* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_dbconfig__ = __webpack_require__(11);
-
-
-const MovieModel = () => {};
-
-MovieModel.getAll = () => {};
-
-MovieModel.get = () => {};
-
-MovieModel.insert = () => {};
-
-MovieModel.update = () => {};
-
-MovieModel.delete = () => {};
-
-/* harmony default export */ __webpack_exports__["a"] = (MovieModel);
+module.exports = require("http-status");
 
 /***/ }),
 /* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mysql__ = __webpack_require__(12);
+/* harmony export (immutable) */ __webpack_exports__["b"] = getAll;
+/* harmony export (immutable) */ __webpack_exports__["a"] = createMovie;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config_dbconfig__ = __webpack_require__(12);
+
+
+function getAll() {
+  __WEBPACK_IMPORTED_MODULE_0__config_dbconfig__["a" /* default */].connect(err => {
+    return err ? console.log(`Error to conect Mysql : ${err.stack}`) : console.log(`Conexion establecida con MYSQL N.: ${__WEBPACK_IMPORTED_MODULE_0__config_dbconfig__["a" /* default */].threadId}`);
+  });
+
+  return new Promise((resolve, reject) => {
+    __WEBPACK_IMPORTED_MODULE_0__config_dbconfig__["a" /* default */].query('SELECT * FROM movies', (err, rows) => {
+      if (err) reject(err);else resolve(rows);
+    });
+  });
+}
+
+function createMovie(args) {
+  return new Promise((resolve, reject) => {
+
+    __WEBPACK_IMPORTED_MODULE_0__config_dbconfig__["a" /* default */].query('INSERT INTO movies(title,description,year) values(?,?,?)', [args.title, args.description, args.year], (err, data) => {
+      if (err) reject(err);else resolve(data);
+    });
+  });
+}
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mysql__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mysql___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_mysql__);
 /* eslint-disable no-console */
 
 
 const dbOptions = {
-  HOST: 'localhost',
-  PORT: 3306,
-  USER: 'user',
-  PASSWORD: 'reload',
-  DATABASE: 'node_mysql'
+  host: 'localhost',
+  port: 3306,
+  user: 'user',
+  password: '12345678',
+  database: 'node_mysql'
 };
 
 const con = __WEBPACK_IMPORTED_MODULE_0_mysql___default.a.createConnection(dbOptions);
 
-con.connect(err => {
-  return err ? console.log(`Error to conect Mysql : ${err.stack}`) : console.log(`Conexion establecida con MYSQL N.: ${con.threadId}`);
-});
+// con.connect((err) => {
+//   return (err) ? console.log(`Error to conect Mysql : ${err.stack}`) :
+//     console.log(`Conexion establecida con MYSQL N.: ${con.threadId}`);
+// });
 
-/* unused harmony default export */ var _unused_webpack_default_export = (con);
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-module.exports = require("mysql");
+/* harmony default export */ __webpack_exports__["a"] = (con);
 
 /***/ }),
 /* 13 */
 /***/ (function(module, exports) {
 
-module.exports = require("http-status");
+module.exports = require("mysql");
 
 /***/ })
 /******/ ]);

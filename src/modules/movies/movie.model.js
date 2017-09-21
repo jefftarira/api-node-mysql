@@ -1,22 +1,27 @@
 import conn from '../../config/dbconfig';
 
-const MovieModel = () => {
-};
+export function getAll() {
+  conn.connect((err) => {
+    return (err) ? console.log(`Error to conect Mysql : ${err.stack}`) :
+      console.log(`Conexion establecida con MYSQL N.: ${conn.threadId}`);
+  });
 
-MovieModel.getAll = () => {
-};
+  return new Promise((resolve, reject) => {
+    conn.query('SELECT * FROM movies', (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows);
+    });
+  });
+}
 
-MovieModel.get = () => {
-};
+export function createMovie(args) {
+  return new Promise((resolve, reject) => {
 
-MovieModel.insert = () => {
-};
-
-MovieModel.update = () => {
-};
-
-MovieModel.delete = () => {
-};
-
-export default MovieModel;
-
+    conn.query('INSERT INTO movies(title,description,year) values(?,?,?)',
+      [args.title, args.description, args.year],
+      (err, data) => {
+        if (err) reject(err);
+        else resolve(data);
+      })
+  });
+}
