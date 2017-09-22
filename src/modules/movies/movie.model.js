@@ -1,10 +1,8 @@
 import conn from '../../config/dbconfig';
 
 export function getAll() {
-  conn.connect((err) => {
-    return (err) ? console.log(`Error to conect Mysql : ${err.stack}`) :
-      console.log(`Conexion establecida con MYSQL N.: ${conn.threadId}`);
-  });
+  conn.connect((err) => ((err) ? console.log(`Error to conect Mysql : ${err.stack}`) :
+    console.log(`Conexion establecida con MYSQL N.: ${conn.threadId}`)));
 
   return new Promise((resolve, reject) => {
     conn.query('SELECT * FROM movies', (err, rows) => {
